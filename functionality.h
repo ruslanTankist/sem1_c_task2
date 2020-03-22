@@ -1,0 +1,10 @@
+#ifndef _FUNCTIONALITY_H_
+#define _FUNCTIONALITY_H_
+
+#define REQUIRED_SIZE 100000000 //100 Mb
+
+int non_parallel();
+
+int parallel();
+
+#endif
