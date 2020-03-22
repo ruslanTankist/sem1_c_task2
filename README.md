@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/ruslanTankist/sem1_c_task2.svg?branch=hinducode_threads)](https://travis-ci.com/ruslanTankist/sem1_c_task2)
+
 # sem1_c_task2
 ИЗ№2, Юзеев Руслан, АПО-12
 
