@@ -11,18 +11,19 @@
 
 int main()
 {   
-    int success;
+    int * array;
     clock_t time1 = clock();
-    success = non_parallel();
+    array = non_parallel();
     clock_t time2 = clock();
-    if(success == 1) { printf("Error in non_parallel()\n"); return 0; }
+    if(array == NULL) { printf("Error in non_parallel()\n"); return 0; }
     printf("\ntime for non-parallel variant: %ld\n", (time2 - time1));
 
     time1 = clock();
-    success = parallel();
+    array = parallel();
     time2 = clock();
-    if(success == 1) { printf("Error in parallel()\n"); return 0; }
+    if(array == NULL) { printf("Error in parallel()\n"); return 0; }
     printf("\ntime for parallel variant: %ld\n", (time2 - time1));
+    free_array(array);
 
     return 0;
 }

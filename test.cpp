@@ -6,15 +6,42 @@ extern "C" {
 
 class TestExecution : public ::testing::Test
 {
-
+    protected:
+        void SetUp() override
+        {
+            array = NULL;
+        }
+        void TearDown() override
+        {
+            free_array(array);
+        }
+        int * array;
 };
 
-TEST_F(TestExecution, NonParallSucces)
+TEST_F(TestExecution, NonParallSuccess)
 {
-    EXPECT_TRUE( (non_parallel() == 0) );
+    bool correct = true;
+    array = non_parallel();
+    if (array != NULL)
+        for (int i = 0; i < REQUIRED_SIZE/sizeof(int); i++)
+            if(array[i] != (i % 4))
+            {
+                correct = false;
+                break;
+            }
+    EXPECT_TRUE(correct);
 }
 
 TEST_F(TestExecution, ParallSuccess)
 {
-    EXPECT_TRUE( parallel() == 0);
+    bool correct = true;
+    array = parallel();
+    if (array != NULL)
+        for (int i = 0; i < REQUIRED_SIZE/sizeof(int); i++)
+            if(array[i] != (i % 4))
+            {
+                correct = false;
+                break;
+            }
+    EXPECT_TRUE(correct);
 }
