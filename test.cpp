@@ -15,7 +15,7 @@ class TestExecution : public ::testing::Test
         {
             free_array(array);
         }
-        int * array;
+        char * array;
 };
 
 TEST_F(TestExecution, NonParallSuccess)
@@ -37,7 +37,7 @@ TEST_F(TestExecution, ParallSuccess)
     bool correct = true;
     array = parallel();
     if (array != NULL)
-        for (int i = 0; i < REQUIRED_SIZE/sizeof(int); i++)
+        for (int i = 0; i < REQUIRED_SIZE; i++)
             if(array[i] != (i % 4))
             {
                 correct = false;

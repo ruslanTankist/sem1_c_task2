@@ -3,10 +3,10 @@
 
 #define REQUIRED_SIZE 100000000 //100 Mb
 
-int * non_parallel();
+char * non_parallel();
 
-int * parallel();
+char * parallel();
 
-void free_array(int *);
+void free_array(char *);
 
 #endif

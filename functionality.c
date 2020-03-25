@@ -13,12 +13,11 @@
 #include "functionality.h"
 
 //----------just one thread/one process work with array
-int * non_parallel()
+char * non_parallel()
 {
-    int * array = malloc(REQUIRED_SIZE);
+    char * array = malloc(REQUIRED_SIZE);
     if( array == 0 ) { return NULL; }
-    const int array_size = REQUIRED_SIZE / sizeof(int);
-    for(int i = 0; i < array_size; i++)
+    for(int i = 0; i < REQUIRED_SIZE; i++)
     {
         array[i] = i % 4;
     }
@@ -28,18 +27,16 @@ int * non_parallel()
 //----------multithread work with array
 typedef struct {
     pthread_mutex_t mutex;
-    int number; //serial number of a thread
-    int * array; //array of int here
-    size_t array_size;
+    char * array; //array of int here
     char job_done[4]; //thread job completed flag
 } thread_data;
 
-thread_data data = {PTHREAD_MUTEX_INITIALIZER, 0, NULL, 0};
+thread_data data = {PTHREAD_MUTEX_INITIALIZER, NULL, {0, 0, 0, 0} };
 
 void * filling_thread(void *arg)
 {
-    int thread_num = data.number;
-    for(int i = thread_num; i < data.array_size; i += 4)
+    int * thread_num = (int *)arg;
+    for(int i = *thread_num; i < REQUIRED_SIZE; i += 4)
     {
         while (1)
         {
@@ -53,28 +50,29 @@ void * filling_thread(void *arg)
             break;
         }
     }
-    data.job_done[thread_num] = 1;
+    data.job_done[*thread_num] = 1;
     return NULL;
 }
 
-int * parallel()
+char * parallel()
 {
     data.array = malloc(REQUIRED_SIZE);
     if( data.array == 0 ) { return NULL; }
-    data.array_size = REQUIRED_SIZE / sizeof(int);
 
     pthread_t thread_id[4];
 
     for (int i = 0; i < 4; i++)
     {
-        data.number = i;
+        int * arg = (int *)malloc(sizeof(int));
+        *arg = i;
         
-        pthread_create(&thread_id[i], NULL, filling_thread, NULL);
+        pthread_create(&thread_id[i], NULL, filling_thread, arg);
     }
 
     //check if array is filled;
     while(1)
     {
+      //  printf("while 1");
         if(data.job_done[0] == 1 && 
             data.job_done[1] == 1 && 
             data.job_done[2] == 1 && 
@@ -88,7 +86,7 @@ int * parallel()
     return data.array;
 }
 
-void free_array(int * arr)
+void free_array(char * arr)
 {
     if(arr != NULL)
         free(arr);

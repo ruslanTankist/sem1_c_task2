@@ -11,7 +11,7 @@
 
 int main()
 {   
-    int * array;
+    char * array;
     clock_t time1 = clock();
     array = non_parallel();
     clock_t time2 = clock();
