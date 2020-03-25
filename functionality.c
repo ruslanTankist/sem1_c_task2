@@ -39,13 +39,17 @@ void * filling_thread(void *arg)
 {
     for(int i = data.number; i < data.array_size; i += 4)
     {
-        int errflag = pthread_mutex_lock(&data.mutex);
-        if(errflag != 0) return NULL;
+        while (1)
+        {
+            int errflag = pthread_mutex_lock(&data.mutex);
+            if(errflag != 0) continue;
 
-        data.array[i] = data.number;
+            data.array[i] = i % 4;
 
-        errflag = pthread_mutex_unlock(&data.mutex);
-        if(errflag != 0) return NULL;
+            errflag = pthread_mutex_unlock(&data.mutex);
+            if(errflag != 0) continue;
+            break;
+        }
     }
     return NULL;
 }
