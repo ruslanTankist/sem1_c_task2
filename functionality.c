@@ -31,13 +31,15 @@ typedef struct {
     int number; //serial number of a thread
     int * array; //array of int here
     size_t array_size;
+    char job_done[4]; //thread job completed flag
 } thread_data;
 
 thread_data data = {PTHREAD_MUTEX_INITIALIZER, 0, NULL, 0};
 
 void * filling_thread(void *arg)
 {
-    for(int i = data.number; i < data.array_size; i += 4)
+    int thread_num = data.number;
+    for(int i = thread_num; i < data.array_size; i += 4)
     {
         while (1)
         {
@@ -51,6 +53,7 @@ void * filling_thread(void *arg)
             break;
         }
     }
+    data.job_done[thread_num] = 1;
     return NULL;
 }
 
@@ -61,12 +64,24 @@ int * parallel()
     data.array_size = REQUIRED_SIZE / sizeof(int);
 
     pthread_t thread_id[4];
+
     for (int i = 0; i < 4; i++)
     {
         data.number = i;
         
         pthread_create(&thread_id[i], NULL, filling_thread, NULL);
     }
+
+    //check if array is filled;
+    while(1)
+    {
+        if(data.job_done[0] == 1 && 
+            data.job_done[1] == 1 && 
+            data.job_done[2] == 1 && 
+            data.job_done[3] == 1)
+        break;
+    }
+    
     for (int i = 0; i < 4; i++)
         pthread_join(thread_id[i], NULL);
 
