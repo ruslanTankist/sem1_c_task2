@@ -42,7 +42,7 @@ void * filling_thread(void *arg)
         int errflag = pthread_mutex_lock(&data.mutex);
         if(errflag != 0) return NULL;
 
-        data.array[i] = i;
+        data.array[i] = data.number;
 
         errflag = pthread_mutex_unlock(&data.mutex);
         if(errflag != 0) return NULL;
@@ -66,7 +66,6 @@ int * parallel()
     for (int i = 0; i < 4; i++)
         pthread_join(thread_id[i], NULL);
 
-    free(data.array);
     return data.array;
 }
 
