@@ -35,8 +35,8 @@ thread_data data = {PTHREAD_MUTEX_INITIALIZER, NULL, {0, 0, 0, 0} };
 
 void * filling_thread(void *arg)
 {
-    int * thread_num = (int *)arg;
-    for(int i = *thread_num; i < REQUIRED_SIZE; i += 4)
+    int thread_num = *(int *)arg;
+    for(int i = thread_num; i < REQUIRED_SIZE; i += 4)
     {
         while (1)
         {
@@ -50,7 +50,7 @@ void * filling_thread(void *arg)
             break;
         }
     }
-    data.job_done[*thread_num] = 1;
+    data.job_done[thread_num] = 1;
     return NULL;
 }
 
@@ -67,6 +67,7 @@ char * parallel()
         *arg = i;
         
         pthread_create(&thread_id[i], NULL, filling_thread, arg);
+        free(arg);
     }
 
     //check if array is filled;
