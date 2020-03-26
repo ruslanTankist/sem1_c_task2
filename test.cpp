@@ -24,7 +24,7 @@ TEST_F(TestExecution, NonParallSuccess)
     array = non_parallel();
     if (array != NULL)
         for (int i = 0; i < REQUIRED_SIZE; i++)
-            if((int)array[i] != (i % 4))
+            if(array[i] != (i % 4))
             {
                 correct = false;
                 break;
@@ -38,7 +38,7 @@ TEST_F(TestExecution, ParallSuccess)
     array = parallel();
     if (array != NULL)
         for (int i = 0; i < REQUIRED_SIZE; i++)
-            if((int)array[i] != (i % 4))
+            if(array[i] != (i % 4))
             {
                 correct = false;
                 break;
