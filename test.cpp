@@ -13,7 +13,7 @@ class TestExecution : public ::testing::Test
         }
         void TearDown() override
         {
-            free_array(array);
+            free(array);
         }
         char * array;
 };
