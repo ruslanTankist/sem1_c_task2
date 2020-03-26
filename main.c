@@ -30,6 +30,7 @@ int main()
         return 0; 
     }
     printf("\ntime for parallel variant: %ld\n", (time2 - time1));
+
     free_array(array);
 
     return 0;

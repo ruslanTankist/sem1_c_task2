@@ -12,11 +12,16 @@
 #include <pthread.h>
 #include "functionality.h"
 
+#define THREAD_NUMBER 4
+
 //----------just one thread/one process work with array
 char * non_parallel()
 {
     char * array = malloc(REQUIRED_SIZE);
-    if( array == 0 ) { return NULL; }
+    if( array == NULL ) { 
+        return NULL;
+    }
+
     for(int i = 0; i < REQUIRED_SIZE; i++)
     {
         array[i] = i % 4;
@@ -24,70 +29,49 @@ char * non_parallel()
     return array;
 }
 
-//----------multithread work with array
+//----------
 typedef struct {
-    pthread_mutex_t mutex;
-    char * array; //array of int here
-    char job_done[4]; //thread job completed flag
-} thread_data;
-
-thread_data data = {PTHREAD_MUTEX_INITIALIZER, NULL, {0, 0, 0, 0} };
+    char * array;
+    int thread_num;
+} data_struct;
 
 void * filling_thread(void *arg)
 {
-    int thread_num = *(int *)arg;
-    free(arg);
-    for(int i = thread_num; i < REQUIRED_SIZE; i += 4)
+    data_struct data = *(data_struct *)arg;
+    for(int i = data.thread_num; i < REQUIRED_SIZE; i += THREAD_NUMBER)
     {
-        while (1)
-        {
-            int errflag = pthread_mutex_lock(&data.mutex);
-            if(errflag != 0) continue;
-
-            data.array[i] = i % 4;
-
-            errflag = pthread_mutex_unlock(&data.mutex);
-            if(errflag != 0) continue;
-            break;
-        }
+        data.array[i] = i % 4;
     }
-    data.job_done[thread_num] = 1;
     return NULL;
 }
 
 char * parallel()
 {
-    data.array = malloc(REQUIRED_SIZE);
-    if( data.array == 0 ) { return NULL; }
-
-    pthread_t thread_id[4];
-
-    for (int i = 0; i < 4; i++)
-    {
-        int * arg = (int *)malloc(sizeof(int));
-        *arg = i;
-        
-        pthread_create(&thread_id[i], NULL, filling_thread, arg);
+    char * arr = malloc(REQUIRED_SIZE);
+    if( arr == 0 ) { 
+        return NULL; 
     }
 
-    //check if array is filled;
-    while(1)
-    {
-        if(data.job_done[0] == 1 && 
-            data.job_done[1] == 1 && 
-            data.job_done[2] == 1 && 
-            data.job_done[3] == 1)
-        break;
-    }
+    data_struct data[THREAD_NUMBER];
     
-    for (int i = 0; i < 4; i++)
-        pthread_join(thread_id[i], NULL);
+    pthread_t thread_id[THREAD_NUMBER];
 
-    return data.array;
+    for (int i = 0; i < THREAD_NUMBER; i++)
+    {   
+        data[i].array = arr;
+        data[i].thread_num = i;
+        
+        pthread_create(&thread_id[i], NULL, filling_thread, &data[i]);
+    }
+
+    for (int i = 0; i < THREAD_NUMBER; i++)
+    {
+        pthread_join(thread_id[i], NULL);
+    }
+    return arr;
 }
 
 void free_array(char * arr)
 {
-    if(arr != NULL)
-        free(arr);
+    free(arr);
 }
