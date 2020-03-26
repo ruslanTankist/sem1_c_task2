@@ -20,7 +20,7 @@ int main()
         return 0; 
     }
     printf("\ntime for non-parallel variant: %ld\n", (time2 - time1));
-    free_array(array);
+    free(array);
 
     time1 = clock();
     array = parallel();
@@ -31,7 +31,7 @@ int main()
     }
     printf("\ntime for parallel variant: %ld\n", (time2 - time1));
 
-    free_array(array);
+    free(array);
 
     return 0;
 }
