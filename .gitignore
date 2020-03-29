@@ -1,0 +1,7 @@
+tmp/
+a.out
+build/
+.vscode/
+Testing/
+.idea/
+cmake-build-debug/

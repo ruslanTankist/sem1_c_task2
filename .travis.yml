@@ -1,0 +1,28 @@
+dist: bionic
+
+sudo: required
+
+language: c
+
+os: linux
+
+compiler: gcc
+  
+before_script:
+  - sudo apt-get -y update
+  - sudo apt-get install gcc-7 g++-7 cmake
+
+script:
+  - sudo apt-get install -y libgtest-dev
+  - cd /usr/src/gtest
+  - sudo cmake CMakeLists.txt && sudo make
+  - sudo cp *.a /usr/lib
+  - cd "${TRAVIS_BUILD_DIR}"
+  - mkdir build && cd build
+  - cmake .. && make
+#  test stage
+  - sudo apt-get install -y valgrind cppcheck gcovr lcov
+  - cppcheck --inconclusive --suppress=missingIncludeSystem --check-config --enable=all --language=c ../main.c ../compilation_builder.h ../compilation_builder.c 
+  - valgrind --leak-check=full --leak-resolution=med --vgdb=no --track-origins=yes ./tests 100
+  - ctest --output-on-failure
+  - gcovr -r ..
